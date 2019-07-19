@@ -23,7 +23,10 @@ class App extends Component {
     // can't change state directly need to use setState
     this.setState({ loading: true });
 
+    console.log(this.state.users);
+
     const res = await axios.get('https://api.github.com/users');
+
 
     this.setState({
       users: res.data,
@@ -34,15 +37,17 @@ class App extends Component {
   }
 
   render() {
+
     return (
       <div className="App">
         <Navbar />
         <div className="container">
+
           <User loading={this.state.loading} users={this.state.users} />
         </div>
-
       </div>
     );
+
   }
 }
 
