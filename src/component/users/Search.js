@@ -1,44 +1,57 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-export class Search extends Component {
-  state = {
-    text: ""
-  };
+// destructure props from here rather than the render below
+const Search = ( { searchUsers, showClear, clearUsers, setAlert }) => {
 
-  static propTypes = {
-    searchUsers: PropTypes.func.isRequired,
-    clearUsers: PropTypes.func.isRequired,
-    showClear: PropTypes.bool.isRequired,
-    setAlert: PropTypes.func.isRequired
-  };
+  // state = {
+  //   text: ''
+  // };
+  // changed to this using useState hook
+  const [text, setText] = useState('')
 
-  onSubmit = e => {
+  // static propTypes = {
+  //   searchUsers: PropTypes.func.isRequired,
+  //   clearUsers: PropTypes.func.isRequired,
+  //   showClear: PropTypes.bool.isRequired,
+  //   setAlert: PropTypes.func.isRequired
+  // };
+
+  // need const when having functions within a function
+  const onSubmit = e => {
     e.preventDefault();
-    if (this.state.text === "") {
-      this.props.setAlert("Please enter something", "light");
+    if (text === "") {
+      setAlert("Please enter something", "light");
     } else {
-      this.props.searchUsers(this.state.text);
-      this.setState({ text: "" });
+      searchUsers(text);
+      // this.setState({ text: "" });
+      setText('');
     }
-  };
+  }; 
 
-  onChange = e => {
+  // const onChange = e => {
     // can use name to target multiple submit forms to prevent having to create multiple onchange methods, previously was text: e.target.value
-    this.setState({ [e.target.name]: e.target.value });
-  };
+  //   this.setState({ [e.target.name]: e.target.value });
+  // };
 
-  render() {
-    const { showClear, clearUsers } = this.props;
+  // call method that we named above using the useState hook to set value to change state
+  const onChange = (e) => {
+    setText(e.target.value)
+  }
+
+  // render() {
+    // const { showClear, clearUsers } = this.props;
     return (
       <div>
-        <form onSubmit={this.onSubmit} className='form'>
+        { /* no longer need this.onSubmit because its not a class */ }
+        <form onSubmit={onSubmit} className='form'>
           <input
             type='text'
             name='text'
             placeholder='Search Users...'
-            value={this.state.text}
-            onChange={this.onChange}
+            value={text}
+            // no longer need this.onChange 
+            onChange={onChange}
           />
           <input
             type='submit'
@@ -53,7 +66,15 @@ export class Search extends Component {
         </form>
       </div>
     );
-  }
+  // }
 }
+
+// proptypes for functional components are placed outside the function, vs class where we use static
+Search.propTypes = {
+  searchUsers: PropTypes.func.isRequired,
+  clearUsers: PropTypes.func.isRequired,
+  showClear: PropTypes.bool.isRequired,
+  setAlert: PropTypes.func.isRequired
+};
 
 export default Search;

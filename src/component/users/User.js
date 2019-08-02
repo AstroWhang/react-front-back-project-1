@@ -1,25 +1,39 @@
-import React, { Component, Fragment } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import Spinner from '../layout/Spinner';
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom';
+import Repos from '../repos/Repos';
 
 
 // won't have state, but will be using lifecycle method, componentwillmount
 
-export class User extends Component {
+const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
 
-  componentDidMount() {
-    //match param which uses login from App.js, path='/user/:login' and passes to the function getUser
-    this.props.getUser(this.props.match.params.login)
-  }
+  // replaced componentDidMount, need an empty array because useEffect is constantly running as a loop
+  // brackets allow us to specify the event in which it runs or an empty bracket makes it so it runs once
+  useEffect(() => {
+    getUser(match.params.login);
+    getUserRepos(match.params.login);
+    // sometimes adding dependecies will create the previous error loop
+    // regarding error to add dependecies
+    // eslint-disable-next-line
+  }, []);
 
-  static propTypes = {
-    loading: PropTypes.bool.isRequired,
-    user: PropTypes.object.isRequired,
-    getUser: PropTypes.func.isRequired,
-  }
+  // componentDidMount() {
+  //   //match param which uses login from App.js, path='/user/:login' and passes to the function getUser
+  //   getUser(match.params.login);
+  //   getUserRepos(match.params.login);
+  // }
 
-  render() {
+  // static propTypes = {
+  //   loading: PropTypes.bool.isRequired,
+  //   user: PropTypes.object.isRequired,
+  //   repos: PropTypes.array.isRequired,
+  //   getUser: PropTypes.func.isRequired,
+  //   getUserRepos: PropTypes.func.isRequired,
+  // }
+
+  // render() {
     const {
       name,
       company,
@@ -34,9 +48,9 @@ export class User extends Component {
       public_repos,
       public_gists,
       hireable
-    } = this.props.user;
+    } = user;
 
-    const { loading } = this.props;
+    // const { loading, repos } = this.props;
 
     if (loading) return <Spinner />;
     return (
@@ -78,14 +92,23 @@ export class User extends Component {
         </div>
         <div className="card text-center">
           <badge className="badge badge-primary">Followers: {followers}</badge>
-          <badge className="badge badge-success">Following: {following}</badge>
           <badge className="badge badge-light">Public Repos: {public_repos}</badge>
+          <badge className="badge badge-success">Following: {following}</badge>
           <badge className="badge badge-dark">Public Gist: {public_gists}</badge>
         </div>
+        <Repos repos={repos} />
 
       </Fragment>
     )
   }
-}
+// }
+
+User.propTypes = {
+    loading: PropTypes.bool.isRequired,
+    user: PropTypes.object.isRequired,
+    repos: PropTypes.array.isRequired,
+    getUser: PropTypes.func.isRequired,
+    getUserRepos: PropTypes.func.isRequired,
+};
 
 export default User
