@@ -1,13 +1,17 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect, Fragment, useContext } from 'react';
 import Spinner from '../layout/Spinner';
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom';
 import Repos from '../repos/Repos';
+import GithubContext from '../../context/github/githubContext';
 
 
 // won't have state, but will be using lifecycle method, componentwillmount
 
-const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
+const User = ({ getUserRepos, repos, match }) => {
+  const githubContext = useContext(GithubContext);
+
+  const { getUser, loading, user } = githubContext;
 
   // replaced componentDidMount, need an empty array because useEffect is constantly running as a loop
   // brackets allow us to specify the event in which it runs or an empty bracket makes it so it runs once
@@ -104,10 +108,10 @@ const User = ({ user, loading, getUser, getUserRepos, repos, match }) => {
 // }
 
 User.propTypes = {
-    loading: PropTypes.bool.isRequired,
-    user: PropTypes.object.isRequired,
+    // loading: PropTypes.bool.isRequired,
+    // user: PropTypes.object.isRequired,
     repos: PropTypes.array.isRequired,
-    getUser: PropTypes.func.isRequired,
+    // getUser: PropTypes.func.isRequired,
     getUserRepos: PropTypes.func.isRequired,
 };
 
